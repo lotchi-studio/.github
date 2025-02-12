@@ -1,5 +1,9 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'python:3.11'
+    }
+  }
   parameters {
     string(name: 'ADDITIONAL_STEPS', defaultValue: '', description: 'Additional steps to run')
   }
