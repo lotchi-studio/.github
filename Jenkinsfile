@@ -1,7 +1,7 @@
 pipeline {
     agent any
     stages {
-        stage('Install Python (Attempt)') {
+        stage('Install Python') {
             steps {
                 sh 'curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh'
                 sh 'bash Miniconda3-latest-Linux-x86_64.sh -b -p $HOME/miniconda'
