@@ -12,7 +12,7 @@ on:
         required: false
         type: string
         default: '16'
-      github_token:
+      c14_token:
         description: 'GitHub Token'
         required: false
         type: string
@@ -48,7 +48,7 @@ jobs:
           git commit -m '[DOC] CHANGELOG'
           git push
         env:
-          GITHUB_TOKEN: ${{ inputs.github_token || secrets.C14_TOKEN }}
+          C14_TOKEN: ${{ inputs.c14_token || secrets.C14_TOKEN }}
 
       - name: Run additional steps
         if: ${{ inputs['additional-steps'] != '' }}
