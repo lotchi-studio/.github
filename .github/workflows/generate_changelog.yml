@@ -1,4 +1,3 @@
-# filepath: /c:/Users/C14/Documents/GitHub/.github/workflows/generate_changelog.yml
 name: Generate Changelog
 
 on:
@@ -36,12 +35,12 @@ jobs:
           node-version: ${{ inputs['node-version'] }}
 
       - name: Install dependencies
-        run: npm install
+        run: npm install && npm install -g auto-changelog
 
-      - name: Generate Changelog
-        run: npm run changelog
+      - name: Generate changelog
+        run: auto-changelog
 
-      - name: Commit and Push Changelog
+      - name: Commit and push changelog
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
