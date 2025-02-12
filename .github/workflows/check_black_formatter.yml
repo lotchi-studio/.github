@@ -1,6 +1,8 @@
 name: Check Black Formatter
 
 on:
+  push:
+  pull_request:
   workflow_call:
     inputs:
       python-version:
@@ -13,8 +15,6 @@ on:
         required: false
         type: string
         default: ''
-  push:
-  pull_request:
 
 jobs:
   black:
