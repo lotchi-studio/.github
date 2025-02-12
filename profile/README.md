@@ -6,7 +6,7 @@
   <h3 align="center">C14</h3>
 
   <p align="center">
-    C14 Studio.
+    Creative & Interactive studio based in Paris.
     <br/><br/>
   </p>
 
