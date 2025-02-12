@@ -6,20 +6,13 @@ pipeline {
   stages {
     stage('Set up Python') {
       steps {
-        // Use the Python plugin to run Python commands
-        python {
-          command "python -m pip install --upgrade pip"
-        }
-        python {
-          command "pip install black"
-        }
+        sh "python -m pip install --upgrade pip"
+        sh "pip install black"
       }
     }
     stage('Check code formatting') {
       steps {
-        python {
-          command "black --check ."
-        }
+        sh "black --check ."
       }
     }
     stage('Run additional steps') {
@@ -27,9 +20,7 @@ pipeline {
         expression { return params.ADDITIONAL_STEPS != '' }
       }
       steps {
-        python {
-          command "${params.ADDITIONAL_STEPS}"
-        }
+        sh "${params.ADDITIONAL_STEPS}"
       }
     }
   }
