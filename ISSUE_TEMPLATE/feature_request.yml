@@ -1,0 +1,13 @@
+name: 💡 Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature]: "
+labels: ["type:feature"]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Brief description of the feature
+      placeholder: Add support for...
+    validations:
+      required: true

@@ -1,0 +1,17 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["type:bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Brief description of the bug
+      placeholder: The application crashes when...
+    validations:
+      required: true
