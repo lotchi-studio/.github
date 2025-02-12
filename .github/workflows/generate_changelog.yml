@@ -1,0 +1,56 @@
+# filepath: /c:/Users/C14/Documents/GitHub/.github/workflows/generate_changelog.yml
+name: Generate Changelog
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'Node.js version to use'
+        required: false
+        type: string
+        default: '16'
+      github_token:
+        description: 'GitHub Token'
+        required: false
+        type: string
+      additional-steps:
+        description: 'Additional steps to run'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ inputs['node-version'] }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs['node-version'] }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Generate Changelog
+        run: npm run changelog
+
+      - name: Commit and Push Changelog
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CHANGELOG.md
+          git commit -m '[DOC] CHANGELOG'
+          git push
+        env:
+          GITHUB_TOKEN: ${{ inputs.github_token || secrets.GITHUB_TOKEN }}
+
+      - name: Run additional steps
+        if: ${{ inputs['additional-steps'] != '' }}
+        run: ${{ inputs['additional-steps'] }}
