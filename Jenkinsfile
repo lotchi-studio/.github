@@ -7,21 +7,7 @@ pipeline {
   parameters {
     string(name: 'ADDITIONAL_STEPS', defaultValue: '', description: 'Additional steps to run')
   }
-  environment {
-    GIT_CREDENTIALS_ID = 'github-credentials'
-  }
   stages {
-    stage('Checkout') {
-      steps {
-        script {
-          checkout([$class: 'GitSCM', branches: [[name: '*/main']],
-            doGenerateSubmoduleConfigurations: false,
-            extensions: [],
-            userRemoteConfigs: [[url: 'https://github.com/C14-studio/.github', credentialsId: env.GIT_CREDENTIALS_ID]]
-          ])
-        }
-      }
-    }
     stage('Set up Python') {
       steps {
         sh "python -m pip install --upgrade pip"
