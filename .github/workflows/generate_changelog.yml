@@ -48,7 +48,7 @@ jobs:
           git commit -m '[DOC] CHANGELOG'
           git push
         env:
-          GITHUB_TOKEN: ${{ inputs.github_token || secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ inputs.github_token || secrets.C14_TOKEN }}
 
       - name: Run additional steps
         if: ${{ inputs['additional-steps'] != '' }}
