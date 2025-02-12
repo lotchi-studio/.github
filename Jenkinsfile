@@ -1,7 +1,10 @@
 pipeline {
-  agent any
+  agent {
+    docker {
+      image 'python:3.11'
+    }
+  }
   parameters {
-    string(name: 'PYTHON_VERSION', defaultValue: '3.11', description: 'Python version to use')
     string(name: 'ADDITIONAL_STEPS', defaultValue: '', description: 'Additional steps to run')
   }
   environment {
