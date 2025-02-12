@@ -1,22 +1,25 @@
 pipeline {
-  agent {
-    docker {
-      image 'python:3.11'
-    }
-  }
+  agent any
   parameters {
     string(name: 'ADDITIONAL_STEPS', defaultValue: '', description: 'Additional steps to run')
   }
   stages {
     stage('Set up Python') {
       steps {
-        sh "python -m pip install --upgrade pip"
-        sh "pip install black"
+        // Use the Python plugin to run Python commands
+        python {
+          command "python -m pip install --upgrade pip"
+        }
+        python {
+          command "pip install black"
+        }
       }
     }
     stage('Check code formatting') {
       steps {
-        sh "black --check ."
+        python {
+          command "black --check ."
+        }
       }
     }
     stage('Run additional steps') {
@@ -24,7 +27,9 @@ pipeline {
         expression { return params.ADDITIONAL_STEPS != '' }
       }
       steps {
-        sh "${params.ADDITIONAL_STEPS}"
+        python {
+          command "${params.ADDITIONAL_STEPS}"
+        }
       }
     }
   }
