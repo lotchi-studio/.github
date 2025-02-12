@@ -1,31 +1,19 @@
 pipeline {
-  agent {
-    docker {
-      image 'python:3.11'
+    agent any
+    stages {
+        stage('Install Python (Attempt)') {
+            steps {
+                sh 'wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh'
+                sh 'bash miniconda.sh -b -p $HOME/miniconda'
+                sh 'export PATH="$HOME/miniconda/bin:$PATH"'
+                sh 'python -m pip install --upgrade pip'
+                sh 'pip install black'
+            }
+        }
+        stage('Check code formatting') {
+            steps {
+                sh 'black --check .'
+            }
+        }
     }
-  }
-  parameters {
-    string(name: 'ADDITIONAL_STEPS', defaultValue: '', description: 'Additional steps to run')
-  }
-  stages {
-    stage('Set up Python') {
-      steps {
-        sh "python -m pip install --upgrade pip"
-        sh "pip install black"
-      }
-    }
-    stage('Check code formatting') {
-      steps {
-        sh "black --check ."
-      }
-    }
-    stage('Run additional steps') {
-      when {
-        expression { return params.ADDITIONAL_STEPS != '' }
-      }
-      steps {
-        sh "${params.ADDITIONAL_STEPS}"
-      }
-    }
-  }
 }
