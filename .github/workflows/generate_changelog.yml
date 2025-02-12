@@ -12,15 +12,14 @@ on:
         required: false
         type: string
         default: '16'
-      github_token:
-        description: 'GitHub Token'
-        required: false
-        type: string
       additional-steps:
         description: 'Additional steps to run'
         required: false
         type: string
         default: ''
+
+permissions:
+  contents: write
 
 jobs:
   changelog:
