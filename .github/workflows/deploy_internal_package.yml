@@ -53,6 +53,11 @@ jobs:
         run: |
           bump2version patch
 
+      - name: List dist directory contents
+        run: |
+          echo "Listing contents of dist directory:"
+          ls -l dist
+
       - name: Verify dist directory
         run: |
           if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
