@@ -41,9 +41,9 @@ jobs:
         run: |
           bump2version patch
 
-      - name: Build Python package
-        run: |
-          python setup.py sdist bdist_wheel
+    #   - name: Build Python package
+    #     run: |
+    #       python setup.py sdist bdist_wheel
 
       - name: Create zip file
         run: |
