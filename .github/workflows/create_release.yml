@@ -1,0 +1,75 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  create_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install bump2version
+
+      - name: Get version type
+        id: version
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)
+          echo "version=$VERSION" >> $GITHUB_ENV
+          if [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "version_type=patch" >> $GITHUB_ENV
+          elif [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+$ ]]; then
+            echo "version_type=minor" >> $GITHUB_ENV
+          elif [[ "$VERSION" =~ ^v[0-9]+$ ]]; then
+            echo "version_type=major" >> $GITHUB_ENV
+          fi
+
+      - name: Bump version
+        if: env.version_type != 'major'
+        run: |
+          bump2version patch
+
+      - name: Build Python package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: Create zip file
+        run: |
+          mkdir -p release
+          zip -r release/package-${{ env.version }}.zip dist/*
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            ## Changes
+            - Describe your changes here.
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release/package-${{ env.version }}.zip
+          asset_name: package-${{ env.version }}.zip
+          asset_content_type: application/zip
