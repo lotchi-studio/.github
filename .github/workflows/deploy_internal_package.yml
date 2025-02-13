@@ -20,6 +20,7 @@ on:
 
 jobs:
   deploy:
+    # runs-on: self-hosted
     runs-on: ubuntu-latest
 
     steps:
@@ -53,43 +54,15 @@ jobs:
         run: |
           bump2version patch
 
-      - name: List dist directory contents
+      - name: Build Python package
         run: |
-          echo "Listing contents of dist directory:"
-          ls -l dist
+          python setup.py sdist bdist_wheel
 
-      - name: Verify dist directory
+      - name: Copy package to local directory
         run: |
-          if [ ! -d "dist" ] || [ -z "$(ls -A dist)" ]; then
-            echo "Error: dist directory is empty or does not exist."
-            exit 1
-          fi
-
-      - name: Create zip file
-        run: |
-          mkdir -p release
-          zip -r release/package-${{ env.version }}.zip dist/*
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            ## Changes
-            - Describe your changes here.
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: release/package-${{ env.version }}.zip
-          asset_name: package-${{ env.version }}.zip
-          asset_content_type: application/zip
+          REPO_NAME=${{ github.event.repository.name }}
+          VERSION=${{ env.version }}
+          DEST_DIR="Z:/root/.pipeline/packages/int/$REPO_NAME/$VERSION"
+          mkdir -p $DEST_DIR
+          cp dist/* $DEST_DIR
+        shell: bash
