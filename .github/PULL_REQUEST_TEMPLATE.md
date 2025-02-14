@@ -35,4 +35,4 @@ Please check the type of change your MR introduces:
 
 - **Assigned To**: @awesome_dev
 - **Expected review time**: 2 days
-- **FYI**: @awesome_dev_too
+- **FYI**: @another_awesome_dev
