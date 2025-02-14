@@ -22,7 +22,7 @@ permissions:
   contents: write
 
 jobs:
-  changelog:
+  generate-changelog:
     runs-on: ubuntu-latest
 
     steps:

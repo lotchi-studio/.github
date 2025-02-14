@@ -17,7 +17,7 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  create-release:
     name: Release pushed tag
     runs-on: ubuntu-latest
     steps:
