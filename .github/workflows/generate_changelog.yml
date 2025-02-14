@@ -37,7 +37,7 @@ jobs:
         run: npm install && npm install -g auto-changelog
 
       - name: Generate changelog
-        run: auto-changelog
+        run: npm run changelog
 
       - name: Commit and push changelog
         run: |

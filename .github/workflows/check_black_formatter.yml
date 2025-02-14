@@ -1,7 +1,6 @@
 name: Check Black Formatter
 
 on:
-  push:
   pull_request:
   workflow_call:
     inputs:
