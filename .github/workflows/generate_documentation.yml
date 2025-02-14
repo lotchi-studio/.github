@@ -31,7 +31,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for mkdocs.yml
+      - name: Check for `mkdocs.yml`
         id: check_files
         run: |
           if [ -f "mkdocs.yml" ]; then
