@@ -15,3 +15,47 @@ body:
       placeholder: The application crashes when...
     validations:
       required: true
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Provide the steps to reproduce the bug
+      placeholder: 1. Go to '...'\n2. Click on '...'\n3. Scroll down to '...'\n4. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: Describe what you expected to happen
+      placeholder: The application should...
+    validations:
+      required: true
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: Describe what actually happened
+      placeholder: The application crashes and shows a 500 error...
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include details about your environment
+      placeholder: OS, Browser, Version, etc.
+    validations:
+      required: true
+  - type: input
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: Add screenshots to help explain your problem (optional)
+      placeholder: URL to screenshot/image
+  - type: input
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here (optional)
+      placeholder: Any other information...
