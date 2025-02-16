@@ -20,7 +20,10 @@ body:
     attributes:
       label: Steps to Reproduce
       description: Provide the steps to reproduce the bug
-      placeholder: 1. Go to '...'\n2. Click on '...'\n3. Scroll down to '...'\n4. See error
+      placeholder: 1. Go to '...'
+      2. Click on '...'
+      3. Scroll down to '...'
+      4. See error
     validations:
       required: true
   - type: textarea
@@ -36,7 +39,7 @@ body:
     attributes:
       label: Actual Behavior
       description: Describe what actually happened
-      placeholder: The application crashes and shows a 500 error...
+      placeholder: The application crashes and...
     validations:
       required: true
   - type: input
@@ -44,7 +47,7 @@ body:
     attributes:
       label: Environment
       description: Include details about your environment
-      placeholder: OS, Browser, Version, etc.
+      placeholder: OS, Machine, Application, etc.
     validations:
       required: true
   - type: input
