@@ -6,7 +6,7 @@
   <h3 align="center">.github</h3>
 
   <p align="center">
-    Public special repository for cross-organization files.
+    Public special repository.
     <br/><br/>
   </p>
 
@@ -26,4 +26,4 @@
 <!-- ABOUT -->
 ## About
 
-Public special repository for cross-organization files.
+Public special repository.
