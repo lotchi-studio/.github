@@ -1,4 +1,4 @@
-name: 📋 Task
+name: Task
 description: Create a new task or user story
 title: "[Task]: "
 labels: ["type:task"]
