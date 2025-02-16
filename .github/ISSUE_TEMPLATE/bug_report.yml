@@ -20,10 +20,7 @@ body:
     attributes:
       label: Steps to Reproduce
       description: Provide the steps to reproduce the bug
-      placeholder: 1. Go to '...'
-      2. Click on '...'
-      3. Scroll down to '...'
-      4. See error
+      placeholder: "1. Go to '...' \n2. Click on '...' \n3. Scroll down to '...' \n4. See error"
     validations:
       required: true
   - type: textarea
