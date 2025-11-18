@@ -8,15 +8,15 @@ on:
   workflow_call:
     inputs:
       node-version:
-        description: 'Node.js version to use'
+        description: "Node.js version to use"
         required: false
         type: string
-        default: '16'
+        default: "16"
       additional-steps:
-        description: 'Additional steps to run'
+        description: "Additional steps to run"
         required: false
         type: string
-        default: ''
+        default: ""
 
 permissions:
   contents: write
@@ -36,7 +36,7 @@ jobs:
           node-version: ${{ inputs['node-version'] }}
 
       - name: Install dependencies
-        run: npm install && npm install -g auto-changelog
+        run: npm install
 
       - name: Generate changelog
         run: npm run changelog
