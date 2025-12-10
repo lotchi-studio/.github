@@ -36,7 +36,7 @@ jobs:
           node-version: ${{ inputs['node-version'] }}
 
       - name: Install dependencies
-        run: npm install
+        run: npm install && npm install -g auto-changelog
 
       - name: Generate changelog
         run: npm run changelog
@@ -55,8 +55,6 @@ jobs:
           else
             echo "No changes to commit"
           fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run additional steps
         if: ${{ inputs['additional-steps'] != '' }}
