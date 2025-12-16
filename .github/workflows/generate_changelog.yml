@@ -17,6 +17,13 @@ on:
         required: false
         type: string
         default: "."
+    secrets:
+      APP_ID:
+        description: "GitHub App ID"
+        required: true
+      APP_PRIVATE_KEY:
+        description: "GitHub App private key"
+        required: true
 
 permissions:
   contents: write
