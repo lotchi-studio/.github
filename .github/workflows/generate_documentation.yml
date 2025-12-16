@@ -1,6 +1,28 @@
 name: GitHub Pages
 
 on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: "Python version to use"
+        type: string
+        default: "3.13"
+      requirements-file:
+        description: "Path to requirements.txt file"
+        type: string
+        default: "./requirements.txt"
+      mkdocs-dir:
+        description: "Directory containing mkdocs.yml"
+        type: string
+        default: "."
+      deploy:
+        description: "Whether to deploy to GitHub Pages"
+        type: boolean
+        default: true
+      publish-dir:
+        description: "Directory to publish"
+        type: string
+        default: "./site"
   push:
     branches:
       - main
@@ -19,7 +41,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
+          python-version: ${{ inputs.python-version || '3.13' }}
 
       - name: Upgrade pip
         run: |
@@ -39,13 +61,15 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        run: python3 -m pip install -r ./requirements.txt
+        run: python3 -m pip install -r ${{ inputs.requirements-file || './requirements.txt' }}
 
-      - run: mkdocs build
+      - name: Build documentation
+        working-directory: ${{ inputs.mkdocs-dir || '.' }}
+        run: mkdocs build
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/main'
+        if: ${{ (inputs.deploy != false) && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
+          publish_dir: ${{ inputs.publish-dir || './site' }}
