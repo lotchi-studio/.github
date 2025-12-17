@@ -84,11 +84,13 @@ jobs:
 
       - name: Commit and push package.py
         run: |
+          TAG_NAME="${GITHUB_REF_NAME:-$(git describe --tags --abbrev=0)}"
+          VERSION="${TAG_NAME#v}"
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add "${{ inputs.package-py-path || 'package.py' }}"
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m '[MISC] Bump package.py version [skip ci]'
+            git commit -m "[BUILD] Bumped Rez package version to ${VERSION}" -m "[skip ci]"
             git push origin main
           else
             echo "No changes to commit"
@@ -181,7 +183,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add CHANGELOG.md
           if [ -n "$(git status --porcelain)" ]; then
-            git commit -m '[DOC] CHANGELOG [skip ci]'
+            git commit -m '[DOC] CHANGELOG' -m '[skip ci]'
             git push origin main
           else
             echo "No changes to commit"
