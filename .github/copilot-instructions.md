@@ -1,91 +1,104 @@
 # Copilot Instructions - Lotchi Studio .github Repository
 
-## Repository Purpose
+## What This Repo Does
 
-This is a special GitHub `.github` repository that provides organization-wide defaults and reusable workflows for all Lotchi Studio projects. Files in this repo automatically apply to other repositories in the organization when they don't have their own versions.
+Organization-wide defaults repository. Files here apply to ALL Lotchi Studio repos that don't have their own versions. **Do not edit for a single project**—changes affect the entire org.
 
-## Project Structure
+## Architecture
 
 ```
 .github/
-├── workflows/           # Reusable GitHub Actions workflows
-├── ISSUE_TEMPLATE/      # Issue templates for all repos
-├── CODEOWNERS           # Default code review assignments (@healkeiser)
+├── workflows/ci.yml           # PR validation (YAML syntax, merge conflicts)
+├── workflows/release.yml      # Full release pipeline (changelog → release → docs → Slack)
+├── ISSUE_TEMPLATE/            # Bug, feature, task templates (YAML form-based)
+├── CODEOWNERS                 # All PRs → @healkeiser
 └── pull_request_template.md
-scripts/git/             # PowerShell version management scripts
-profile/                 # Organization profile README
+.scripts/git/                  # PowerShell versioning (IncrementVersion.ps1, ShowCurrentVersion.ps1)
 ```
 
-## Key Workflows
+## Release Pipeline (Critical Flow)
 
-### Reusable Workflows (workflow_call)
-All workflows support `workflow_call` with optional inputs and additional custom steps:
-- **generate_changelog.yml**: Auto-generates CHANGELOG.md using `auto-changelog` library, commits with `[DOC] CHANGELOG` message
-- **generate_documentation.yml**: Builds and deploys MkDocs documentation to GitHub Pages (checks for `mkdocs.yml` first)
-- **check_pylint.yml**: Runs pylint on all Python files
-- **check_black_formatter.yml**: Validates Black formatting (strict check, no auto-fix)
-- **create_release.yml**: Creates GitHub releases from version tags (triggered on `v*.*.*` tags)
+Triggered by `v*.*.*` tags. Sequential jobs with dependencies:
 
-### Workflow Customization Pattern
-All reusable workflows follow this pattern:
-```yaml
-workflow_call:
-  inputs:
-    python-version: { default: '3.11' }  # or node-version
-    additional-steps: { default: '' }    # Custom bash commands to append
-```
+1. **update-package-version** → Bumps `package.py` for Rez packages (optional)
+2. **generate-changelog** → `auto-changelog` generates CHANGELOG.md, commits `[DOC] CHANGELOG`
+3. **create-release** → Draft GitHub release with extracted changelog section
+4. **deploy-docs** → MkDocs to GitHub Pages (if `mkdocs.yml` exists)
+5. **notify-slack** → Posts to Slack webhook
+
+The workflow uses GitHub App token (`APP_ID`/`APP_PRIVATE_KEY` secrets) to bypass branch protection for automated commits.
+
+## Commit Message Prefixes (Required)
+
+Parsed by `.auto-changelog` config—use exact format:
+- `[FEAT]` - New feature
+- `[FIX]` or `[BUG]` - Bug fixes
+- `[DOC]` - Documentation (auto-used for CHANGELOG commits)
+- `[STYLE]` - Formatting, naming
+- `[BUILD]` - CI/build changes
+- `[MISC]` - Other (filtered from changelog by default)
 
 ## Version Management
 
-### Semantic Versioning System
-- Uses Git tags in `vX.Y.Z` format (e.g., `v0.2.9`)
-- **PowerShell Scripts**: `scripts/git/increment_version.ps1` and `show_current_version.ps1`
-- Run via VS Code tasks: "Show Current Version" or "Create and Push Git Tag"
-
-### Incrementing Versions
 ```powershell
-# From VS Code task (prompts for type)
-./scripts/git/increment_version.ps1 major   # 1.0.0 -> 2.0.0
-./scripts/git/increment_version.ps1 minor   # 1.0.0 -> 1.1.0
-./scripts/git/increment_version.ps1 patch   # 1.0.0 -> 1.0.1
+# Use VS Code tasks or run directly:
+.\.scripts\git\IncrementVersion.ps1 patch  # v1.0.0 → v1.0.1
+.\.scripts\git\IncrementVersion.ps1 minor  # v1.0.0 → v1.1.0
+.\.scripts\git\IncrementVersion.ps1 major  # v1.0.0 → v2.0.0
 ```
-Script automatically creates and pushes the new tag, which triggers the release workflow.
 
-## Commit Message Convention
+Script creates + pushes tag immediately. First tag defaults to `v0.1.0`.
 
-Follow prefix patterns observed in CHANGELOG.md:
-- `[DOC]` - Documentation updates (auto-generated for CHANGELOG)
-- `[FIX]` - Bug fixes
-- `[MISC]` - Miscellaneous changes
-- `[STYLE]` - Visual/styling changes
+## Workflow Reuse Pattern
 
-## Python Project Standards
+Other repos call these workflows via `workflow_call`:
+```yaml
+uses: lotchi-studio/.github/.github/workflows/release.yml@main
+with:
+  python-version: '3.13'
+  skip-changelog: false
+secrets:
+  APP_ID: ${{ secrets.APP_ID }}
+  APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+```
 
-- **Python Version**: Default to `3.11` (configurable in workflows)
-- **Formatter**: Black (enforced via CI, no auto-fix in PR checks)
-- **Linter**: Pylint (runs on all `*.py` files)
-- **Documentation**: MkDocs with mkdocstrings, mkdocs-material theme, git plugins
+Key inputs: `node-version`, `python-version`, `skip-changelog`, `skip-docs`, `update-package-py`
 
-## Development Tasks
+### Rez Package Support
 
-Available VS Code tasks (see `.vscode/tasks.json`):
-- "Show Current Version" - Display current git tag
-- "Create and Push Git Tag" - Increment version (prompts for type)
-- "Deploy Documentation" - Run `mkdocs gh-deploy`
-- "Generate Changelog" - Run `npm run changelog`
+For repos using Rez, set `update-package-py: true` to auto-bump `package.py` version on release:
+```yaml
+with:
+  update-package-py: true
+  package-py-path: "package.py"  # default path
+```
+The workflow updates `version = "X.Y.Z"` in package.py before changelog generation.
 
-## PR Requirements
+## Required Secrets
 
-From `pull_request_template.md`, PRs must:
-- Add/update unit tests if needed
-- Update documentation if needed
-- Pass local build and lint checks
-- Update CHANGELOG.md manually (or let automation handle it on main)
-- Specify PR type (bugfix, feature, refactoring, etc.) and breaking change status
+| Secret | Purpose | Required? |
+|--------|---------|-----------|
+| `APP_ID` | GitHub App ID for bypassing branch protection | Yes, for automated commits |
+| `APP_PRIVATE_KEY` | GitHub App private key | Yes, for automated commits |
+| `SLACK_WEBHOOK_URL` | Slack incoming webhook for release notifications | Optional |
+| `GH_TOKEN` | GitHub token for `git-committers` MkDocs plugin | Optional, for docs |
 
-## Important Notes
+## Key Files to Know
 
-- **CODEOWNERS**: All files default to review by @healkeiser
-- **Changelog Automation**: After merging to main, changelog is auto-generated and committed by github-actions bot
-- **Package Management**: `package-lock.json` is intentionally removed after changelog generation (see workflow)
-- **Workflow Permissions**: All workflows require `contents: write` permission for commits/tags
+| File | Purpose |
+|------|---------|
+| `.auto-changelog` | Changelog template config; `ignoreCommitPattern` filters `[DOC]`, `[MISC]`, `[skip ci]` |
+| `mkdocs.yml` | MkDocs Material theme config; uses `git-committers` plugin (requires `GH_TOKEN`) |
+| `package.json` | Only contains `auto-changelog` dev dependency |
+
+## Don't Do
+
+- Don't commit `package-lock.json`—workflow removes it after changelog generation
+- Don't manually edit CHANGELOG.md on main—it's auto-regenerated on release
+- Don't create non-reusable workflows—everything should support `workflow_call`
+
+## Note on Legacy Workflows
+
+The previous separate workflows (`check_pylint.yml`, `check_black_formatter.yml`, `generate_changelog.yml`, `generate_documentation.yml`, `create_release.yml`) have been consolidated into:
+- [ci.yml](.github/workflows/ci.yml) — PR validation only
+- [release.yml](.github/workflows/release.yml) — Full release pipeline (handles all post-merge automation)
