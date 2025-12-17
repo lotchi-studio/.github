@@ -41,7 +41,7 @@ on:
       SLACK_WEBHOOK_URL:
         description: "Slack incoming webhook URL for release notifications"
         required: false
-      GITHUB_TOKEN:
+      GH_TOKEN:
         description: "GitHub token for git-committers plugin"
         required: false
 
@@ -259,7 +259,7 @@ jobs:
       - name: Deploy to GitHub Pages
         if: steps.check-mkdocs.outputs.exists == 'true'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN || secrets.C14_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.C14_GITHUB_TOKEN }}
         run: mkdocs gh-deploy --force
 
   # Step 4: Notify Slack
