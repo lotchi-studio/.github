@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for merge conflicts markers
+        run: |
+          if grep -rn "<<<<<<< HEAD" --include="*" .; then
+            echo "::error::Merge conflict markers found"
+            exit 1
+          fi
+
+      - name: Validate YAML files
+        run: |
+          for file in $(find . -name "*.yml" -o -name "*.yaml"); do
+            echo "Validating $file"
+            python3 -c "import yaml; yaml.safe_load(open('$file'))" || exit 1
+          done
+
+      - name: Check workflow syntax
+        run: |
+          echo "All workflow files are valid YAML"

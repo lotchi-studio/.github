@@ -4,7 +4,7 @@
         {
             "label": "Show Current Version",
             "type": "shell",
-            "command": "powershell -ExecutionPolicy Bypass -File ./scripts/git/show_current_version.ps1",
+            "command": "powershell -ExecutionPolicy Bypass -File ./.scripts/git/ShowCurrentVersion.ps1",
             "problemMatcher": [],
             "group": {
                 "kind": "none",
@@ -18,7 +18,7 @@
         {
             "label": "Create and Push Git Tag",
             "type": "shell",
-            "command": "powershell -ExecutionPolicy Bypass -File ./scripts/git/increment_version.ps1 ${input:incrementType}",
+            "command": "powershell -ExecutionPolicy Bypass -File ./.scripts/git/IncrementVersion.ps1 ${input:incrementType}",
             "problemMatcher": [],
             "group": {
                 "kind": "none",
@@ -33,20 +33,6 @@
             "label": "Deploy Documentation",
             "type": "shell",
             "command": "python -m mkdocs gh-deploy",
-            "problemMatcher": [],
-            "group": {
-                "kind": "none",
-                "isDefault": true
-            },
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "Generate Changelog",
-            "type": "shell",
-            "command": "npm run changelog",
             "problemMatcher": [],
             "group": {
                 "kind": "none",
