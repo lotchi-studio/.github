@@ -218,8 +218,6 @@ jobs:
     needs: create-release
     if: ${{ always() && !cancelled() && inputs.skip-docs != true }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
