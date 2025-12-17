@@ -95,6 +95,11 @@ jobs:
           if [ -n "$(git status --porcelain)" ]; then
             git commit -m "[BUILD] Bumped Rez package version to ${VERSION}" -m "[skip ci]"
             git push origin main
+
+            # Move the tag to include this commit
+            echo "Moving tag $TAG_NAME to include package.py bump..."
+            git tag -f "$TAG_NAME"
+            git push origin "$TAG_NAME" --force
           else
             echo "No changes to commit"
           fi
