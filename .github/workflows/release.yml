@@ -245,11 +245,30 @@ jobs:
             echo "No mkdocs.yml found, skipping documentation deployment"
           fi
 
+      - name: Check if using mike
+        id: check-mike
+        if: steps.check-mkdocs.outputs.exists == 'true'
+        run: |
+          # Check if mkdocs.yml uses mike as version provider
+          if grep -q "provider: mike" mkdocs.yml 2>/dev/null; then
+            echo "uses_mike=true" >> $GITHUB_OUTPUT
+            echo "Project uses mike for versioned documentation"
+          else
+            echo "uses_mike=false" >> $GITHUB_OUTPUT
+            echo "Project uses standard mkdocs"
+          fi
+
       - name: Setup Python
         if: steps.check-mkdocs.outputs.exists == 'true'
         uses: actions/setup-python@v5
         with:
           python-version: ${{ inputs.python-version || '3.13' }}
+
+      - name: Configure Git for mike
+        if: steps.check-mike.outputs.uses_mike == 'true'
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Install dependencies
         if: steps.check-mkdocs.outputs.exists == 'true'
@@ -261,8 +280,22 @@ jobs:
             python3 -m pip install mkdocs mkdocs-material
           fi
 
-      - name: Deploy to GitHub Pages
-        if: steps.check-mkdocs.outputs.exists == 'true'
+      - name: Deploy with mike (versioned)
+        if: steps.check-mike.outputs.uses_mike == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.C14_GITHUB_TOKEN }}
+          C14_GITHUB_TOKEN: ${{ secrets.C14_GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${GITHUB_REF_NAME:-$(git describe --tags --abbrev=0)}"
+          VERSION="${TAG_NAME#v}"
+          # Extract major.minor for alias (e.g., 2.1.0 -> 2.1)
+          MAJOR_MINOR=$(echo "$VERSION" | cut -d. -f1,2)
+
+          echo "Deploying documentation version: $VERSION (alias: $MAJOR_MINOR, latest)"
+          mike deploy --push --update-aliases "$VERSION" latest
+
+      - name: Deploy with mkdocs (standard)
+        if: steps.check-mkdocs.outputs.exists == 'true' && steps.check-mike.outputs.uses_mike != 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN || secrets.C14_GITHUB_TOKEN }}
         run: mkdocs gh-deploy --force
