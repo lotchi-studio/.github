@@ -1,3 +1,7 @@
+/* =============================================================================
+   ANIMATIONS
+   ============================================================================= */
+
 @keyframes scale-in-center {
     0% {
         transform: scale(0);
@@ -14,7 +18,19 @@
     animation: scale-in-center .5s cubic-bezier(.25, .46, .45, .94) both
 }
 
-/* Custom color overrides */
+/* =============================================================================
+   LAYOUT
+   ============================================================================= */
+
+/* Increase content area width (default is 1220px) */
+.md-grid {
+    max-width: 1440px;
+}
+
+/* =============================================================================
+   CUSTOM COLORS
+   ============================================================================= */
+
 :root>* {
     /* Accent color shades */
     --md-accent-fg-color: #fd4301;
@@ -22,32 +38,28 @@
     --md-accent-bg-color: #fd4301;
     --md-accent-bg-color--light: #fd430110;
 
-    /* Typeset `a` color shades */
+    /* Typeset link color */
     --md-typeset-a-color: #fd4301;
 }
 
-/* Black primary color overrides */
+/* =============================================================================
+   BLACK PRIMARY COLOR THEME
+   ============================================================================= */
+
 [data-md-color-primary="black"] {
-    /* Primary color shades */
     --md-primary-fg-color: #000000;
     --md-primary-fg-color--light: #000000;
     --md-primary-fg-color--dark: #000000;
-
-    /* Typeset `a` color shades */
     --md-typeset-a-color: #fd4301;
-}
 
-/* Light mode (default scheme) overrides */
-[data-md-color-scheme="default"][data-md-color-primary="black"] {
-
-    /* Header */
+    /* Header - semi-transparent for frost/blur effect */
     .md-header {
-        background-color: #000000;
+        background-color: rgba(0, 0, 0, 0.7);
     }
 
     /* Navigation tabs */
     .md-tabs {
-        background-color: #000000;
+        background-color: rgba(0, 0, 0, 0.7);
     }
 
     /* Footer */
@@ -56,42 +68,27 @@
     }
 }
 
-/* Dark mode (slate scheme) overrides */
-[data-md-color-scheme="slate"][data-md-color-primary="black"] {
-    /* Primary color shades */
-    --md-primary-fg-color: #000000;
-    --md-primary-fg-color--light: #000000;
-    --md-primary-fg-color--dark: #000000;
+/* =============================================================================
+   DARK MODE (SLATE SCHEME) OVERRIDES
+   ============================================================================= */
 
-    /* Default color shades */
+[data-md-color-scheme="slate"][data-md-color-primary="black"] {
+    /* Background colors */
     --md-default-bg-color: #121212;
     --md-default-bg-color--light: #121212;
     --md-default-bg-color--lighter: #121212;
     --md-default-bg-color--lightest: #121212;
 
-    /* Footer color shades */
+    /* Footer colors */
     --md-footer-bg-color: #000000;
     --md-footer-bg-color--dark: #000000;
-
-    /* Typeset `a` color shades */
-    --md-typeset-a-color: #fd4301;
-
-    /* Header */
-    .md-header {
-        background-color: #000000;
-    }
-
-    /* Navigation tabs */
-    .md-tabs {
-        background-color: #000000;
-    }
 
     /* Main content area */
     .md-main {
         background-color: #121212;
     }
 
-    /* Sidebar */
+    /* Sidebars */
     .md-sidebar {
         background-color: #121212;
     }
@@ -100,12 +97,11 @@
     .md-content {
         background-color: #121212;
     }
-
-    /* Footer */
-    .md-footer {
-        background-color: #000000 !important;
-    }
 }
+
+/* =============================================================================
+   INTERACTIVE STATES
+   ============================================================================= */
 
 /* Link hover effects */
 .md-typeset a:hover,
