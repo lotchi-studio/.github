@@ -1,7 +1,0 @@
-{
-    "template": "keepachangelog",
-    "unreleased": true,
-    "commitLimit": false,
-    "ignoreCommitPattern": "\\[DOC\\]|\\[MISC\\].*package\\.py|\\[skip ci\\]|CHANGELOG|README",
-    "sortCommits": "date"
-}
