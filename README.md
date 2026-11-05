@@ -1,7 +1,7 @@
 <div align="center">
 
-  <img src="https://github.com/lotchi-studio/.github/raw/main/images/lotchi-studio-wordmark-stacked-light.svg#gh-light-mode-only" alt="Logo" width="250"/>
-  <img src="https://github.com/lotchi-studio/.github/raw/main/images/lotchi-studio-wordmark-stacked-dark.svg#gh-dark-mode-only" alt="Logo" width="250"/>
+  <img src="https://github.com/lotchi-studio/.github/raw/main/images/lotchi-studio-wordmark-stacked-light.svg#gh-light-mode-only" alt="Logo" width="450"/>
+  <img src="https://github.com/lotchi-studio/.github/raw/main/images/lotchi-studio-wordmark-stacked-dark.svg#gh-dark-mode-only" alt="Logo" width="450"/>
 
   <h3 align="center">.github</h3>
 
